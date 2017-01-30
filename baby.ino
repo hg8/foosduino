@@ -54,6 +54,8 @@ int melodyWinTempo[] = {
 
 
 
+
+
 void setup()
 {
     pinMode(PIR_MOTION_SENSOR_1, INPUT);
@@ -63,13 +65,6 @@ void setup()
     pinMode(redGamelleButton, INPUT);
 
     pinMode(blueGamelleButton, INPUT);
-    
-    ledTeam1.init();
-    ledTeam2.init();
-    
-    ledTeam1.setColorRGB(0, 0, 255, 0);
-    ledTeam2.setColorRGB(0, 0, 255, 0);
-
     
 
     lcd.begin(16, 2);
@@ -281,4 +276,3 @@ void goal() {
     buzz(melodyPin, 0, noteDuration);
   }
 }
-
