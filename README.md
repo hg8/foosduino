@@ -1,6 +1,6 @@
-# Grep prices/m2 from MA
+# Fussduino 
 
-An automatic football table score counter using Arduino using Motion detector.
+An automatic football table score counter using Arduino using Motion detector. :soccer: :guardsman: 
 
 ## Todo 
 
