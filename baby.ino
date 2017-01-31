@@ -39,8 +39,8 @@ rgb_lcd lcd;
 int redGamelleButtonState = 0;  
 int blueGamelleButtonState = 0;
 
-int score1 = 0;
-int score2 = 0;
+int scoreRed = 0;
+int scoreBlue = 0;
 
 
 void setup()
@@ -49,7 +49,6 @@ void setup()
     pinMode(PIR_MOTION_SENSOR_2, INPUT);
 
     pinMode(REDGAMELLEBUTTON, INPUT);
-
     pinMode(BLUEGAMELLEBUTTON, INPUT);
     
 
@@ -62,9 +61,9 @@ void setup()
     lcd.clear();
     lcd.print("Rouge / Bleu ");
     lcd.setCursor(0, 1);
-    lcd.print(String(score1));
+    lcd.print(String(scoreRed));
     lcd.setCursor(11, 1);
-    lcd.print(String(score2));
+    lcd.print(String(scoreBlue));
 
     pinMode(MELODYPIN, OUTPUT);
 
@@ -79,51 +78,51 @@ void loop()
 
     //Button gamelle
     if (redGamelleButtonState == HIGH) {
-        score1 = score1 - 1;
+        scoreRed = scoreRed - 1;
         lcd.clear();
         lcd.print("Gamelle !");
         delay(1000);
         lcd.clear();
         lcd.print("Rouge / Bleu ");
         lcd.setCursor(0, 1);
-        lcd.print(String(score1));
+        lcd.print(String(scoreRed));
         lcd.setCursor(11, 1);
-        lcd.print(String(score2));
+        lcd.print(String(scoreBlue));
         delay(2000);
         
     }
 
     if(blueGamelleButtonState==1){
         blueGamelleButtonState = 0;
-        score2 = score2 - 1;
+        scoreBlue = scoreBlue - 1;
         lcd.clear();
         lcd.print("Gamelle !");
         delay(1000);
         lcd.clear();
         lcd.print("Rouge / Bleu ");
         lcd.setCursor(0, 1);
-        lcd.print(String(score1));
+        lcd.print(String(scoreRed));
         lcd.setCursor(11, 1);
-        lcd.print(String(score2));
+        lcd.print(String(scoreBlue));
         delay(2000);
     }
 
   
     if(isGoalDetected(PIR_MOTION_SENSOR_1)){
         lcd.setRGB(255, 0, 0);
-        score1++;
+        scoreRed++;
 
         
         lcd.clear();
         lcd.print("Rouge / Bleu ");
         lcd.setCursor(0, 1);
-        lcd.print(String(score1));
+        lcd.print(String(scoreRed));
         lcd.setCursor(11, 1);
-        lcd.print(String(score2));
+        lcd.print(String(scoreBlue));
 
         goal();
 
-        if(score1 == 10){
+        if(scoreRed == 10){
           lcd.clear();
           lcd.setRGB(255, 0, 0);
           lcd.print("Rouge gagne!");
@@ -143,18 +142,18 @@ void loop()
 
        if(isGoalDetected(PIR_MOTION_SENSOR_2)){
         lcd.setRGB(0, 0, 255);
-        score2++;
+        scoreBlue++;
 
         lcd.clear();
         lcd.print("Rouge / Bleu ");
         lcd.setCursor(0, 1);
-        lcd.print(String(score1));
+        lcd.print(String(scoreRed));
         lcd.setCursor(11, 1);
-        lcd.print(String(score2));
+        lcd.print(String(scoreBlue));
 
         goal();
 
-        if(score2 == 10){
+        if(scoreBlue == 10){
           lcd.clear();
           lcd.setRGB(0, 0, 255);
           lcd.print("Bleu gagne!");
