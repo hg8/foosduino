@@ -1,4 +1,4 @@
-# Fussduino 
+# Foosduino 
 
 An automatic football table score counter using Arduino using Motion detector. :soccer: :guardsman: 
 
@@ -7,5 +7,7 @@ An automatic football table score counter using Arduino using Motion detector. :
 - [x] 'Gamelle' support
 - [x] Fix buzzer at start
 - [ ] 'Demi' support
+- [ ] Include speed sensor
+- [ ] Include sound sensor
 
 
