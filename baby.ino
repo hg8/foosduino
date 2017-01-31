@@ -1,12 +1,8 @@
-/*macro definitions of PIR motion sensor pin and LED pin*/
-#define PIR_MOTION_SENSOR_1 2//Use pin 2 to receive the signal from the module
-#define PIR_MOTION_SENSOR_2 10
-
-#include <ChainableLED.h>
 #include <Wire.h>
 #include "rgb_lcd.h"
 
-#define NUM_LEDS  1
+#define PIR_MOTION_SENSOR_1 10
+#define PIR_MOTION_SENSOR_2 2
 
 #define NOTE_C4  262
 #define NOTE_D4  294
@@ -20,13 +16,9 @@
 
 #define melodyPin 4
 
- 
-ChainableLED ledTeam1(4, 5, NUM_LEDS);
-ChainableLED ledTeam2(12, 13, NUM_LEDS);
 rgb_lcd lcd;
 const int redGamelleButton = 8; 
 const int blueGamelleButton=6;
-const int ledPin =  13;      // the number of the LED pin
 
 
 int redGamelleButtonState = 0;  
@@ -93,9 +85,7 @@ void loop()
 
     //Button gamelle
     if (redGamelleButtonState == HIGH) {
-        // turn LED on:
         score1 = score1 - 1;
-        digitalWrite(ledPin, LOW);
         lcd.clear();
         lcd.print("Gamelle !");
         delay(1000);
@@ -112,7 +102,6 @@ void loop()
     if(blueGamelleButtonState==1){
         blueGamelleButtonState = 0;
         score2 = score2 - 1;
-        digitalWrite(ledPin, LOW);
         lcd.clear();
         lcd.print("Gamelle !");
         delay(1000);
@@ -127,10 +116,8 @@ void loop()
 
   
     if(isGoalDetected(PIR_MOTION_SENSOR_1)){//if it detects the moving people?
-        ledTeam1.setColorRGB(0, 255, 0, 0);
         lcd.setRGB(255, 0, 0);
         score1++;
-        ledTeam1.setColorRGB(0, 0, 0, 255);
 
         goal();
 
@@ -152,7 +139,7 @@ void loop()
           delay(100000);
         }
 
-        delay(1000);
+        delay(5000);
 
         lcd.setRGB(155, 155, 155);
 
@@ -160,10 +147,8 @@ void loop()
     }
 
        if(isGoalDetected(PIR_MOTION_SENSOR_2)){//if it detects the moving people?
-        ledTeam2.setColorRGB(0, 255, 0, 0);
         lcd.setRGB(0, 0, 255);
         score2++;
-        ledTeam2.setColorRGB(0, 0, 0, 255);
 
         goal();
 
@@ -185,7 +170,7 @@ void loop()
           delay(100000);
         }
         
-        delay(1000);
+        delay(5000);
 
         lcd.setRGB(0, 255, 0);
     }
