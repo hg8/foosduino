@@ -3,6 +3,9 @@
 
 #define PIR_MOTION_SENSOR_1 10
 #define PIR_MOTION_SENSOR_2 2
+#define MELODYPIN 4
+#define REDGAMELLEBUTTON 8
+#define BLUEGAMELLEBUTTON 6
 
 #define NOTE_C4  262
 #define NOTE_D4  294
@@ -14,19 +17,6 @@
 #define NOTE_D5  587
 #define NOTE_A5  880
 
-#define melodyPin 4
-
-rgb_lcd lcd;
-const int redGamelleButton = 8; 
-const int blueGamelleButton=6;
-
-
-int redGamelleButtonState = 0;  
-int blueGamelleButtonState = 0;
-
-float hue = 0.0;
-int score1 = 0;
-int score2 = 0;
 
 int melodyGoal[] = {
   NOTE_A5, NOTE_A5, NOTE_A5, NOTE_D5
@@ -44,8 +34,13 @@ int melodyWinTempo[] = {
  3, 9, 6, 6, 3, 9, 9, 9, 9, 9, 3
 };
 
+rgb_lcd lcd;
 
+int redGamelleButtonState = 0;  
+int blueGamelleButtonState = 0;
 
+int score1 = 0;
+int score2 = 0;
 
 
 void setup()
@@ -53,10 +48,9 @@ void setup()
     pinMode(PIR_MOTION_SENSOR_1, INPUT);
     pinMode(PIR_MOTION_SENSOR_2, INPUT);
 
-    //Rouge gamelle button
-    pinMode(redGamelleButton, INPUT);
+    pinMode(REDGAMELLEBUTTON, INPUT);
 
-    pinMode(blueGamelleButton, INPUT);
+    pinMode(BLUEGAMELLEBUTTON, INPUT);
     
 
     lcd.begin(16, 2);
@@ -72,7 +66,7 @@ void setup()
     lcd.setCursor(11, 1);
     lcd.print(String(score2));
 
-    pinMode(melodyPin, OUTPUT);
+    pinMode(MELODYPIN, OUTPUT);
 
 
 }
@@ -80,8 +74,8 @@ void setup()
 void loop()
 {
 
-    redGamelleButtonState = digitalRead(redGamelleButton);
-    blueGamelleButtonState = digitalRead(blueGamelleButton);
+    redGamelleButtonState = digitalRead(REDGAMELLEBUTTON);
+    blueGamelleButtonState = digitalRead(BLUEGAMELLEBUTTON);
 
     //Button gamelle
     if (redGamelleButtonState == HIGH) {
@@ -115,18 +109,19 @@ void loop()
     }
 
   
-    if(isGoalDetected(PIR_MOTION_SENSOR_1)){//if it detects the moving people?
+    if(isGoalDetected(PIR_MOTION_SENSOR_1)){
         lcd.setRGB(255, 0, 0);
         score1++;
 
-        goal();
-
+        
         lcd.clear();
         lcd.print("Rouge / Bleu ");
         lcd.setCursor(0, 1);
         lcd.print(String(score1));
         lcd.setCursor(11, 1);
         lcd.print(String(score2));
+
+        goal();
 
         if(score1 == 10){
           lcd.clear();
@@ -146,11 +141,9 @@ void loop()
         
     }
 
-       if(isGoalDetected(PIR_MOTION_SENSOR_2)){//if it detects the moving people?
+       if(isGoalDetected(PIR_MOTION_SENSOR_2)){
         lcd.setRGB(0, 0, 255);
         score2++;
-
-        goal();
 
         lcd.clear();
         lcd.print("Rouge / Bleu ");
@@ -158,6 +151,8 @@ void loop()
         lcd.print(String(score1));
         lcd.setCursor(11, 1);
         lcd.print(String(score2));
+
+        goal();
 
         if(score2 == 10){
           lcd.clear();
@@ -172,92 +167,64 @@ void loop()
         
         delay(5000);
 
-        lcd.setRGB(0, 255, 0);
+        lcd.setRGB(155, 155, 155);
     }
 
 }
 
-/***************************************************************/
-/*Function: Detect whether anyone moves in it's detecting range*/
-/*Return:-boolean, true is someone detected.*/
+
 boolean isGoalDetected(int SENSOR)
 {
     int sensorValue = digitalRead(SENSOR);
-    if(sensorValue == HIGH)//if the sensor value is HIGH?
+    if(sensorValue == HIGH)
     {
         Serial.println("Detected");
-        return true;//yes,return true
+        return true;
     }
     else
     {
-        return false;//no,return false
+        return false;
     }
 }
 
 
+
 void buzz(int targetPin, long frequency, long length) {
-  long delayValue = 1000000 / frequency / 2; // calculate the delay value between transitions
-  //// 1 second's worth of microseconds, divided by the frequency, then split in half since
-  //// there are two phases to each cycle
-  long numCycles = frequency * length / 1000; // calculate the number of cycles for proper timing
-  //// multiply frequency, which is really cycles per second, by the number of seconds to
-  //// get the total number of cycles to produce
-  for (long i = 0; i < numCycles; i++) { // for the calculated length of time...
-    digitalWrite(targetPin, HIGH); // write the buzzer pin high to push out the diaphram
+  long delayValue = 1000000 / frequency / 2;
+  long numCycles = frequency * length / 1000; 
+  for (long i = 0; i < numCycles; i++) { 
+    digitalWrite(targetPin, HIGH); 
     delayMicroseconds
 
-(delayValue); // wait for the calculated delay value
-    digitalWrite(targetPin, LOW); // write the buzzer pin low to pull back the diaphram
-    delayMicroseconds(delayValue); // wait again or the calculated delay value
+(delayValue); 
+    digitalWrite(targetPin, LOW); 
+    delayMicroseconds(delayValue); 
   }
   digitalWrite(13, LOW);
 
 }
 
+// Winning melody
 void win() {
-  // iterate over the notes of the melody:
-  Serial.println(" 'Goal'");
   int size = sizeof(melodyWin) / sizeof(int);
   for (int thisNote = 0; thisNote < size; thisNote++) {
-
-    // to calculate the note duration, take one second
-    // divided by the note type.
-    //e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.
     int noteDuration = 1000 / melodyWinTempo[thisNote];
-
-    buzz(melodyPin, melodyWin[thisNote], noteDuration);
-
-    // to distinguish the notes, set a minimum time between them.
-    // the note's duration + 30% seems to work well:
+    buzz(MELODYPIN, melodyWin[thisNote], noteDuration);
     int pauseBetweenNotes = noteDuration * 1.30;
     delay(pauseBetweenNotes);
-
-    // stop the tone playing:
-    buzz(melodyPin, 0, noteDuration);
+    buzz(MELODYPIN, 0, noteDuration);
   }
     
 }
 
-
+// Goal melody
 void goal() {
-  // iterate over the notes of the melody:
-  Serial.println(" 'Goal'");
   int size = sizeof(melodyGoal) / sizeof(int);
   for (int thisNote = 0; thisNote < size; thisNote++) {
-
-    // to calculate the note duration, take one second
-    // divided by the note type.
-    //e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.
     int noteDuration = 1000 / melodyGoalTempo[thisNote];
-
-    buzz(melodyPin, melodyGoal[thisNote], noteDuration);
-
-    // to distinguish the notes, set a minimum time between them.
-    // the note's duration + 30% seems to work well:
+    buzz(MELODYPIN, melodyGoal[thisNote], noteDuration);
     int pauseBetweenNotes = noteDuration * 1.30;
     delay(pauseBetweenNotes);
-
-    // stop the tone playing:
-    buzz(melodyPin, 0, noteDuration);
+    buzz(MELODYPIN, 0, noteDuration);
   }
 }
